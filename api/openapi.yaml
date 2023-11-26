@@ -1,0 +1,745 @@
+openapi: 3.0.0
+info:
+  description: "Imgur's API exposes the entire Imgur infrastructure via a standardized\
+    \ programmatic interface. Using Imgur's API, you can do just about anything you\
+    \ can do on imgur.com, while using your programming language of choice."
+  title: Imgur API
+  version: 0.4.0
+externalDocs:
+  description: Find out more about Imgur API.
+  url: https://apidocs.imgur.com/
+servers:
+- url: https://api.imgur.com
+tags:
+- description: Account-dependent endpoints.
+  name: account
+- description: Authentication and authorization.
+  name: auth
+- description: Account-agnostic endpoints about image.
+  name: image
+paths:
+  /oauth/token:
+    post:
+      operationId: generate_access_token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/generate_access_token_request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+          description: Successful operation.
+      summary: Generate a new access token from given refresh token.
+      tags:
+      - auth
+      x-content-type: application/x-www-form-urlencoded
+      x-accepts: application/json
+  /3/account/{userName}:
+    get:
+      operationId: getAccount
+      parameters:
+      - explode: false
+        in: path
+        name: userName
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+          description: Successful operation.
+      security:
+      - oauth2: []
+      summary: Get information about an account.
+      tags:
+      - account
+      x-accepts: application/json
+  /3/account/{userName}/images:
+    get:
+      operationId: getAccountImages
+      parameters:
+      - explode: false
+        in: path
+        name: userName
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountImagesResponse'
+          description: Successful operation.
+      security:
+      - oauth2: []
+      summary: Get images of an account.
+      tags:
+      - account
+      x-accepts: application/json
+  /3/account/{userName}/images/count:
+    get:
+      operationId: getAccountImagesCount
+      parameters:
+      - explode: false
+        in: path
+        name: userName
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicInt32Response'
+          description: Successful operation.
+      security:
+      - oauth2: []
+      summary: Get images count of an account.
+      tags:
+      - account
+      x-accepts: application/json
+  /3/account/{userName}/images/{imageHash}:
+    get:
+      operationId: getAccountImage
+      parameters:
+      - explode: false
+        in: path
+        name: imageHash
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: userName
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+          description: Successful operation.
+      security:
+      - oauth2: []
+      summary: Get an image of an account.
+      tags:
+      - account
+      x-accepts: application/json
+  /3/image:
+    post:
+      operationId: uploadImage
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/uploadImage_request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+          description: Successful operation.
+      security:
+      - clientId: []
+      - oauth2: []
+      summary: Upload an image.
+      tags:
+      - image
+      x-content-type: application/x-www-form-urlencoded
+      x-accepts: application/json
+  /3/image/{imageHash}:
+    delete:
+      operationId: deleteImage
+      parameters:
+      - explode: false
+        in: path
+        name: imageHash
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicBooleanResponse'
+          description: Successful operation.
+      security:
+      - clientId: []
+      - oauth2: []
+      summary: Delete an image.
+      tags:
+      - image
+      x-accepts: application/json
+    get:
+      operationId: getImage
+      parameters:
+      - explode: false
+        in: path
+        name: imageHash
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+          description: Successful operation.
+      security:
+      - clientId: []
+      - oauth2: []
+      summary: Get information about an image.
+      tags:
+      - image
+      x-accepts: application/json
+    post:
+      operationId: updateImage
+      parameters:
+      - explode: false
+        in: path
+        name: imageHash
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/updateImage_request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicBooleanResponse'
+          description: Successful operation.
+      security:
+      - clientId: []
+      - oauth2: []
+      summary: Update an image.
+      tags:
+      - image
+      x-content-type: application/x-www-form-urlencoded
+      x-accepts: application/json
+  /3/image/{imageHash}/favorite:
+    post:
+      operationId: favoriteImage
+      parameters:
+      - explode: false
+        in: path
+        name: imageHash
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicStringResponse'
+          description: Successful operation.
+      security:
+      - oauth2: []
+      summary: Favorite an image.
+      tags:
+      - image
+      x-accepts: application/json
+components:
+  parameters:
+    imageHash:
+      explode: false
+      in: path
+      name: imageHash
+      required: true
+      schema:
+        type: string
+      style: simple
+    userName:
+      explode: false
+      in: path
+      name: userName
+      required: true
+      schema:
+        type: string
+      style: simple
+  schemas:
+    AccessToken:
+      example:
+        access_token: access_token
+        refresh_token: refresh_token
+        account_id: 0
+        account_username: account_username
+        scope: scope
+        token_type: token_type
+        expires_in: 6
+      properties:
+        access_token:
+          type: string
+        account_id:
+          format: int32
+          type: integer
+        account_username:
+          type: string
+        expires_in:
+          format: int32
+          type: integer
+        refresh_token:
+          type: string
+        scope:
+          type: string
+        token_type:
+          type: string
+      required:
+      - access_token
+      - account_id
+      - account_username
+      - expires_in
+      - refresh_token
+      - token_type
+      type: object
+    Account:
+      example:
+        reputation_name: reputation_name
+        user_follow:
+          status: true
+        created: 0
+        bio: bio
+        reputation: 1
+        pro_expiration: true
+        avatar: avatar
+        id: 6
+        url: url
+      properties:
+        avatar:
+          type: string
+        bio:
+          type: string
+        created:
+          format: int32
+          type: integer
+        id:
+          format: int32
+          type: integer
+        pro_expiration:
+          type: boolean
+        reputation_name:
+          type: string
+        reputation:
+          format: int32
+          type: integer
+        url:
+          type: string
+        user_follow:
+          $ref: '#/components/schemas/Account_user_follow'
+      required:
+      - created
+      - id
+      - pro_expiration
+      - reputation
+      - reputation_name
+      - url
+      - user_follow
+      type: object
+    AccountResponse:
+      example:
+        data:
+          reputation_name: reputation_name
+          user_follow:
+            status: true
+          created: 0
+          bio: bio
+          reputation: 1
+          pro_expiration: true
+          avatar: avatar
+          id: 6
+          url: url
+        success: true
+        status: 5
+      properties:
+        data:
+          $ref: '#/components/schemas/Account'
+        status:
+          format: int32
+          type: integer
+        success:
+          type: boolean
+      required:
+      - data
+      - status
+      - success
+      type: object
+    AccountImagesResponse:
+      example:
+        data:
+        - in_most_viral: true
+          ad_type: 6
+          link: link
+          description: description
+          section: section
+          title: title
+          type: type
+          deletehash: deletehash
+          datetime: 5
+          id: id
+          in_gallery: true
+          vote: vote
+          views: 7
+          height: 5
+          bandwidth: 1
+          is_ad: true
+          nsfw: true
+          ad_url: ad_url
+          tags:
+          - tags
+          - tags
+          account_id: 0
+          size: 2
+          account_url: account_url
+          name: name
+          width: 9
+          animated: true
+          favorite: true
+        - in_most_viral: true
+          ad_type: 6
+          link: link
+          description: description
+          section: section
+          title: title
+          type: type
+          deletehash: deletehash
+          datetime: 5
+          id: id
+          in_gallery: true
+          vote: vote
+          views: 7
+          height: 5
+          bandwidth: 1
+          is_ad: true
+          nsfw: true
+          ad_url: ad_url
+          tags:
+          - tags
+          - tags
+          account_id: 0
+          size: 2
+          account_url: account_url
+          name: name
+          width: 9
+          animated: true
+          favorite: true
+        success: true
+        status: 3
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Image'
+          type: array
+        status:
+          format: int32
+          type: integer
+        success:
+          type: boolean
+      required:
+      - data
+      - status
+      - success
+      type: object
+    BasicBooleanResponse:
+      example:
+        data: true
+        success: true
+        status: 0
+      properties:
+        data:
+          type: boolean
+        status:
+          format: int32
+          type: integer
+        success:
+          type: boolean
+      required:
+      - data
+      - status
+      - success
+      type: object
+    BasicInt32Response:
+      example:
+        data: 0
+        success: true
+        status: 6
+      properties:
+        data:
+          format: int32
+          type: integer
+        status:
+          format: int32
+          type: integer
+        success:
+          type: boolean
+      required:
+      - data
+      - status
+      - success
+      type: object
+    BasicStringResponse:
+      example:
+        data: data
+        success: true
+        status: 0
+      properties:
+        data:
+          type: string
+        status:
+          format: int32
+          type: integer
+        success:
+          type: boolean
+      required:
+      - data
+      - status
+      - success
+      type: object
+    Image:
+      example:
+        in_most_viral: true
+        ad_type: 6
+        link: link
+        description: description
+        section: section
+        title: title
+        type: type
+        deletehash: deletehash
+        datetime: 5
+        id: id
+        in_gallery: true
+        vote: vote
+        views: 7
+        height: 5
+        bandwidth: 1
+        is_ad: true
+        nsfw: true
+        ad_url: ad_url
+        tags:
+        - tags
+        - tags
+        account_id: 0
+        size: 2
+        account_url: account_url
+        name: name
+        width: 9
+        animated: true
+        favorite: true
+      properties:
+        account_id:
+          format: int32
+          type: integer
+        account_url:
+          type: string
+        ad_type:
+          format: int32
+          type: integer
+        ad_url:
+          type: string
+        animated:
+          type: boolean
+        bandwidth:
+          format: int32
+          type: integer
+        deletehash:
+          type: string
+        datetime:
+          format: int32
+          type: integer
+        description:
+          type: string
+        favorite:
+          type: boolean
+        height:
+          format: int32
+          type: integer
+        id:
+          type: string
+        in_gallery:
+          type: boolean
+        in_most_viral:
+          type: boolean
+        is_ad:
+          type: boolean
+        link:
+          type: string
+        name:
+          type: string
+        nsfw:
+          type: boolean
+        section:
+          type: string
+        size:
+          format: int32
+          type: integer
+        tags:
+          items:
+            type: string
+          type: array
+        title:
+          type: string
+        type:
+          type: string
+        views:
+          format: int32
+          type: integer
+        vote:
+          type: string
+        width:
+          format: int32
+          type: integer
+      required:
+      - ad_type
+      - ad_url
+      - animated
+      - bandwidth
+      - datetime
+      - favorite
+      - height
+      - id
+      - in_gallery
+      - in_most_viral
+      - is_ad
+      - link
+      - size
+      - tags
+      - type
+      - views
+      - width
+      type: object
+    ImageResponse:
+      example:
+        data:
+          in_most_viral: true
+          ad_type: 6
+          link: link
+          description: description
+          section: section
+          title: title
+          type: type
+          deletehash: deletehash
+          datetime: 5
+          id: id
+          in_gallery: true
+          vote: vote
+          views: 7
+          height: 5
+          bandwidth: 1
+          is_ad: true
+          nsfw: true
+          ad_url: ad_url
+          tags:
+          - tags
+          - tags
+          account_id: 0
+          size: 2
+          account_url: account_url
+          name: name
+          width: 9
+          animated: true
+          favorite: true
+        success: true
+        status: 0
+      properties:
+        data:
+          $ref: '#/components/schemas/Image'
+        status:
+          format: int32
+          type: integer
+        success:
+          type: boolean
+      required:
+      - data
+      - status
+      - success
+      type: object
+    generate_access_token_request:
+      properties:
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        grant_type:
+          enum:
+          - refresh_token
+          type: string
+        refresh_token:
+          type: string
+      required:
+      - client_id
+      - client_secret
+      - grant_type
+      - refresh_token
+      type: object
+    uploadImage_request:
+      properties:
+        album:
+          type: string
+        description:
+          type: string
+        image:
+          format: base64
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+      required:
+      - image
+      type: object
+    updateImage_request:
+      properties:
+        description:
+          type: string
+        title:
+          type: string
+      type: object
+    Account_user_follow:
+      example:
+        status: true
+      properties:
+        status:
+          type: boolean
+      required:
+      - status
+      type: object
+  securitySchemes:
+    clientId:
+      in: header
+      name: Authorization
+      type: apiKey
+    oauth2:
+      flows:
+        implicit:
+          authorizationUrl: https://api.imgur.com/oauth2/authorize
+          refreshUrl: https://api.imgur.com/oauth/token
+          scopes: {}
+      type: oauth2
+
